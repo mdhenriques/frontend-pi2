@@ -1,0 +1,10 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #3C3C40; /* Define o fundo cinza */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Remove barra de rolagem */
+  }
