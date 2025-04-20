@@ -36,18 +36,15 @@ const emit = defineEmits<{
 /* Container das caixas */
 .content-container {
   position: absolute;
-  max-height: 50%;
-  bottom: 54px;
+  top: 213px; /* distância abaixo do avatar/perfil */
   left: 54px;
   right: 54px;
+  bottom: 54px; /* mantém uma margem inferior */
   display: flex;
   justify-content: flex-start;
   gap: 20px;
-  /* Espaço entre as caixas */
   width: calc(100% - 108px);
-  max-height: calc(100vh - 108px - 20px - 92px - 213px);
-  /* Altura máxima das caixas */
-  height: 100%;
+  height: auto;
 }
 
 /* Estilização das caixas */
