@@ -12,7 +12,12 @@ const emit = defineEmits<{
 
 const title = ref('')
 const description = ref('')
-function handleCreateTask() {}
+function handleCreateTask() {
+  emit('create-task', {
+    title: title.value,
+    description: description.value
+  })
+}
 </script>
 
 <template>

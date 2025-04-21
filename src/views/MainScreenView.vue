@@ -23,18 +23,18 @@ const sortedTasks = computed(() => {
   });
 });
 
-const createTask = async () => {
-  if (title.value && description.value) {
+const createTask = async (task: { title: string, description: string }) => {
+  if (task.title && task.description) {
     try {
       const token = localStorage.getItem("auth_token");
       const response = await axios.post(
         "http://localhost:5155/tarefa",
         {
-          title: title.value,
-          description: description.value,
+          title: task.title,
+          description: task.description,
         },
         {
-          headers: {
+          headers: {  
             Authorization: `Bearer ${token}`,
           },
         }
