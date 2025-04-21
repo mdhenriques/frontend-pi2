@@ -95,7 +95,10 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    // Atualizar a lista de tarefas ou mostrar um feedback
+    const updatedTask = tasks.value.find(t => t.id === taskId)
+    if (updatedTask) {
+      updatedTask.status = 'concluido';
+    }
     console.log("Tarefa concluída com sucesso!");
 
   } catch (error) {
