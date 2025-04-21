@@ -80,6 +80,29 @@ const updateRewards = async () => {
   }
 }
 
+const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: number }) => {
+  const token = localStorage.getItem("auth_token");
+  try {
+    await axios.put(
+      `http://localhost:5155/tarefa/status/${taskId}`,
+      { status: "concluido" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    await axios.put(
+      "http://localhost:5155/user/reward",
+      { coinReward: reward.coins, xpReward: reward.xp },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Atualizar a lista de tarefas ou mostrar um feedback
+    console.log("Tarefa concluída com sucesso!");
+
+  } catch (error) {
+    console.error("Erro ao concluir tarefa:", error);
+  }
+};
+
 onMounted(async () => {
   await fetchTasks();
   await updateRewards();
@@ -103,6 +126,7 @@ onMounted(async () => {
      :tasks="sortedTasks"
      @add-task="showModal = true"
      @task-updated="fetchTasks"
+     @mark-completed="markTaskAsCompleted"
     />
     <!-- Componente Modal criação de tarefas-->
     <TaskModal

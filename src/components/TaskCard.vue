@@ -13,36 +13,15 @@ interface Task {
 const props = defineProps<{ task: Task }>();
 const emit = defineEmits<{
   (event: "task-updated"): void;
+  (event: "mark-completed", taskId: number, reward: { coins: number, xp: number }): void
 }>();
 // Função para marcar a tarefa como concluída
-const markAsCompleted = async () => {
-    const token = localStorage.getItem("auth_token");
-    try {
-        await axios.put(
-            `http://localhost:5155/tarefa/status/${props.task.id}`,
-            {
-                status: "concluido",
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-        );
-
-        await axios.put(
-             "http://localhost:5155/user/reward",
-             { coinReward: props.task.coinsReward, xpReward: props.task.xpReward },
-             { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        setTimeout(() => {
-            window.location.reload(); // Recarrega a página
-        }, 500);
-        
-        emit("task-updated")
-    } catch (error) {
-        console.error("Erro ao atualizar o status da tarefa:", error);
+const markAsCompleted = () => {
+    if(props.task.status !== 'concluido') {
+        emit("mark-completed", props.task.id, {
+            coins: props.task.coinsReward,
+            xp: props.task.xpReward
+        });
     }
 };
 </script>

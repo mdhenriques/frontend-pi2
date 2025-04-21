@@ -10,6 +10,7 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'add-task'): void
     (e: 'task-updated'): void
+    (e: 'mark-completed', taskId: number, reward: { coins: number, xp: number }): void;
 }>()
 </script>
 
@@ -25,6 +26,7 @@ const emit = defineEmits<{
          :key="task.id" 
          :task="task" 
          @task-updated="emit('task-updated')"
+         @mark-completed="(id, reward) => $emit('mark-completed', id, reward)"
         />
       </div>
       <div class="box"></div>
