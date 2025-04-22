@@ -12,7 +12,7 @@ const props = defineProps<{
       </div>
       <slot />
     </div>
-  </template>
+</template>
 
 <style scoped>
 /* Estilização das caixas */
@@ -35,7 +35,7 @@ const props = defineProps<{
   box-sizing: border-box;
   background-color: rgba(160, 160, 160, 0.997);
   border-bottom: 2px solid #ddd;
-  position: absolute;
+
   top: 0;
   left: 0;
   right: 0;
