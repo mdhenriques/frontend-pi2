@@ -106,6 +106,12 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
   }
 };
 
+const handleCreateTask = async (task: { title: string, description: string }) => {
+    await createTask(task);
+    await fetchTasks();
+    showModal.value = false; // Fecha o modal após criar a tarefa
+}
+
 onMounted(async () => {
   await fetchTasks();
   await updateRewards();
@@ -135,7 +141,7 @@ onMounted(async () => {
     <TaskModal
       :show="showModal"
       @close="showModal = false"
-      @create-task="createTask"
+      @create-task="handleCreateTask"
     />
 
   </div>

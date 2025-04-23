@@ -24,7 +24,7 @@ function handleCreateTask() {
     <div v-if="show" class="modal-overlay">
       <div class="modal">
         <h2>Criar Tarefa</h2>
-        <form @submit.prevent="handleCreateTask">
+        <form @submit.prevent="handleCreateTask" @submit="emit('close')">
           <label for="title">Título</label>
           <input type="text" id="title" v-model="title" required />
 
