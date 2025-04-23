@@ -64,9 +64,9 @@ const fetchTasks = async (): Promise<void> => {
   }
 }
 
-const updateRewards = async (coinReward = 0, xpReward = 0) => {
+const updateRewards = async (coinReward = 0, xpReward = 0, token) => {
   try {
-    const token = localStorage.getItem("auth_token");
+    
     const response = await axios.put(
       "http://localhost:5155/user/reward",
       {  coinReward, xpReward },
@@ -82,6 +82,16 @@ const updateRewards = async (coinReward = 0, xpReward = 0) => {
   }
 }
 
+const addProgress = async (token) => {
+  try {
+    axios.post('http://localhost:5155/missao/progresso/1',
+      { headers: { Authorization: `Bearer ${token}`} }
+    )    
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: number }) => {
   const token = localStorage.getItem("auth_token");
   try {
@@ -91,8 +101,8 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    await updateRewards(reward.coins, reward.xp);
-
+    await updateRewards(reward.coins, reward.xp, token);
+    await addProgress(token);
 
     const updatedTask = tasks.value.find(t => t.id === taskId)
     if (updatedTask) {
