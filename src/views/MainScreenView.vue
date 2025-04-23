@@ -43,7 +43,7 @@ const createTask = async (task: { title: string, description: string }) => {
       console.error("Não foi possível criar a tarefa", error);
     }
   } else {
-    console.error("Título e descrição são obrigatórios.")
+    console.error("Título e descrição são obrigatórios.");
   }
 }
 
@@ -62,12 +62,12 @@ const fetchTasks = async (): Promise<void> => {
   }
 }
 
-const updateRewards = async () => {
+const updateRewards = async (coinReward = 0, xpReward = 0) => {
   try {
     const token = localStorage.getItem("auth_token");
     const response = await axios.put(
       "http://localhost:5155/user/reward",
-      { coinReward: 0, xpReward: 0 },
+      {  coinReward, xpReward },
       { headers: { Authorization: `Bearer ${token}`}}
     );
 
@@ -89,11 +89,8 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    await axios.put(
-      "http://localhost:5155/user/reward",
-      { coinReward: reward.coins, xpReward: reward.xp },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    await updateRewards(reward.coins, reward.xp);
+
 
     const updatedTask = tasks.value.find(t => t.id === taskId)
     if (updatedTask) {
