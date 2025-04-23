@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
+import computed from 'vue';
 
 interface Task {
     id: number;
@@ -12,84 +13,156 @@ interface Task {
 
 const props = defineProps<{ task: Task }>();
 const emit = defineEmits<{
-  (event: "task-updated"): void;
-  (event: "mark-completed", taskId: number, reward: { coins: number, xp: number }): void
+    (event: "task-updated"): void;
+    (event: "mark-completed", taskId: number, reward: { coins: number, xp: number }): void
 }>();
 // Função para marcar a tarefa como concluída
 const markAsCompleted = () => {
-    if(props.task.status !== 'concluido') {
+    if (props.task.status !== 'concluido') {
         emit("mark-completed", props.task.id, {
             coins: props.task.coinsReward,
             xp: props.task.xpReward
         });
     }
 };
+const statusLabel = computed(() => {
+    switch (props.task.status) {
+        case 'pendente':
+            return 'Pendente';
+        case 'concluido':
+            return 'Concluída';
+        default:
+            return props.task.status;
+    }
+});
 </script>
 
 <template>
     <div class="task-card">
-        <h3>{{ task.title }}</h3>
-        <p>{{ task.description }}</p>
-        <span class="status">{{ task.status }}</span>
-        <div class="rewards">
-            <span>💰 {{ task.coinsReward }}</span>
-            <span>⭐ {{ task.xpReward }}</span>
+        <div class="card-header">
+            <h3>{{ task.title }}</h3>
+            <span class="status" :class="task.status">{{ statusLabel }}</span>
         </div>
-        <!-- Botão de Check para mudar o status da tarefa -->
+
+        <p class="description">{{ task.description }}</p>
+
+        <div class="rewards">
+            <div class="reward">
+                <span class="icon">💰</span>
+                <span class="value">{{ task.coinsReward }}</span>
+            </div>
+            <div class="reward">
+                <span class="icon">⭐</span>
+                <span class="value">{{ task.xpReward }}</span>
+            </div>
+        </div>
+
         <button @click="markAsCompleted" class="check-button" :disabled="task.status === 'concluido'">
-            ✔️
+            ✔️ Marcar como feita
         </button>
     </div>
 </template>
 
-
-
 <style scoped>
 .task-card {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-    border-left: 5px solid #4caf50;
+    background: #2e2e3e;
+    border-radius: 18px;
+    padding: 20px;
+    color: #f0f0f0;
+    box-shadow: 0 0 15px rgba(80, 0, 150, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #3a3a4d;
+}
+
+.task-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(120, 0, 220, 0.3);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
 }
 
 h3 {
+    font-size: 1.2rem;
+    color: #e0e0ff;
     margin: 0;
-    font-size: 1.2em;
-}
-
-p {
-    margin: 5px 0;
-    font-size: 0.9em;
-    color: #555;
 }
 
 .status {
-    font-weight: bold;
-    color: #ff9800;
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #5e4b8b;
+    color: #fff;
+}
+
+.status.pendente {
+    background-color: #a374ff;
+    color: #1e1e2f;
+}
+
+.status.concluido {
+    background-color: #4caf50;
+    color: white;
+}
+
+.description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    color: #ccc;
 }
 
 .rewards {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9em;
-    margin-top: 5px;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.reward {
+    background-color: #3a3a4d;
+    padding: 10px 14px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.reward .icon {
+    margin-right: 6px;
+    font-size: 1.2rem;
 }
 
 .check-button {
-    background-color: #4caf50;
-    color: white;
+    background: linear-gradient(135deg, #7c4dff, #651fff);
     border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
+    color: white;
+    padding: 12px;
+    width: 100%;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 1.2em;
-    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.check-button:hover {
+    background: linear-gradient(135deg, #9575cd, #7e57c2);
 }
 
 .check-button:disabled {
-    background-color: #cccccc;
+    background-color: #555;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 </style>
