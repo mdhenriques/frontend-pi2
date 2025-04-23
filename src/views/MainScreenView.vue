@@ -126,6 +126,18 @@ const fetchMission = async () => {
   }
 }
 
+const deleteTask = async (taskId: number) => {
+  try {
+    const token = localStorage.getItem("auth_token");
+    await axios.delete(
+      `http://localhost:5155/tarefa/${taskId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+  } catch (error) {
+    console.error("Erro ao excluir tarefa: ", error)
+  }
+}
+
 onMounted(async () => {
   await fetchTasks();
   await fetchMission();
@@ -152,6 +164,7 @@ onMounted(async () => {
      @add-task="showModal = true"
      @task-updated="fetchTasks"
      @mark-completed="markTaskAsCompleted"
+     @delete-task="deleteTask"
     />
     <!-- Componente Modal criação de tarefas-->
     <TaskModal

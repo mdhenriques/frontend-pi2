@@ -14,8 +14,13 @@ interface Task {
 const props = defineProps<{ task: Task }>();
 const emit = defineEmits<{
     (event: "task-updated"): void;
-    (event: "mark-completed", taskId: number, reward: { coins: number, xp: number }): void
+    (event: "mark-completed", taskId: number, reward: { coins: number, xp: number }): void;
+    (event: "delete-task", taskId: number): void;
 }>();
+
+const deleteTask = () => {
+    emit("delete-task", props.task.id)
+}
 // Função para marcar a tarefa como concluída
 const markAsCompleted = () => {
     if (props.task.status !== 'concluido') {
@@ -42,6 +47,7 @@ const statusLabel = computed(() => {
         <div class="card-header">
             <h3>{{ task.title }}</h3>
             <div class="status-line" :class="task.status"></div>
+            <button class="delete-button" @click="deleteTask" title="Excluir tarefa">🗑️</button>
         </div>
 
         <p class="description">{{ task.description }}</p>
@@ -186,4 +192,19 @@ h3 {
 .status-line.EmAndamento {
     background-color: #ffc107;
 }
+
+.delete-button {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.2s ease;
+    margin-left: 8px;
+}
+
+.delete-button:hover {
+    color: #ff5252;
+}
+
 </style>

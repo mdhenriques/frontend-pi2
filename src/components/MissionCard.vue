@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import axios from 'axios';
-import { computed } from 'vue';
 
 interface Mission {
     id: number;
