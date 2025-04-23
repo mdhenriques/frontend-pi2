@@ -15,30 +15,44 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-/* Estilização das caixas */
 .box {
   flex-grow: 1;
   min-height: 100%;
-  background-color: white;
+  background: #2e2e3e; /* fundo escuro */
+  border-radius: 16px;
   overflow-y: auto;
   position: relative;
-  /* Garante que .box-header fique limitada à .box */
+  padding: 0;
+  box-shadow: 0 0 15px rgba(80, 0, 150, 0.15);
+  border: 1px solid #3a3a4d;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-/* Header da primeira caixa */
+.box:hover {
+  box-shadow: 0 0 25px rgba(120, 0, 220, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Header da caixa */
 .box-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 10px;
+  padding: 16px 20px;
   box-sizing: border-box;
-  background-color: rgba(160, 160, 160, 0.997);
-  border-bottom: 2px solid #ddd;
+  background: linear-gradient(to right, #3a3a4d, #4b3c66);
+  border-bottom: 1px solid #5c5c7a;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
 
-  top: 0;
-  left: 0;
-  right: 0;
-  /* Para garantir que não ultrapasse a largura da .box */
+/* Título */
+.title {
+  color: #e0e0ff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 </style>

@@ -45,29 +45,32 @@ function handleCreateTask() {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* fundo escurecido */
+  background-color: rgba(15, 15, 25, 0.85); /* Fundo escurecido com leve roxo */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
+  backdrop-filter: blur(6px);
 }
 
 .modal {
-  background-color: #252525;
+  background: linear-gradient(145deg, #2e2e3e, #3b3b52);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(120, 0, 220, 0.3);
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   animation: fadeIn 0.3s ease-in-out;
+  border: 1px solid #4b3c66;
 }
 
 h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  color: #ffffff;
+  font-size: 1.6rem;
+  color: #e0e0ff;
   text-align: center;
+  letter-spacing: 0.5px;
 }
 
 form {
@@ -78,23 +81,27 @@ form {
 label {
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #ffffff;
+  color: #cfcfff;
+  font-size: 0.95rem;
 }
 
 input,
 textarea {
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 1.2rem;
+  background-color: #1f1f2e;
+  color: #f0f0f5;
+  border: 1px solid #5a4d7b;
+  border-radius: 10px;
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input:focus,
 textarea:focus {
-  border-color: #007bff;
+  border-color: #9c6fe4;
   outline: none;
+  box-shadow: 0 0 0 2px rgba(156, 111, 228, 0.3);
 }
 
 textarea {
@@ -106,30 +113,33 @@ button {
   padding: 0.75rem;
   font-size: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  margin-top: 0.5rem;
-  transition: background-color 0.2s ease;
+  margin-top: 0.6rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s;
 }
 
 button[type="submit"] {
-  background-color: #007bff;
+  background: linear-gradient(to right, #7c4dff, #9575cd);
   color: white;
 }
 
 button[type="submit"]:hover {
-  background-color: #0056b3;
+  background: linear-gradient(to right, #6a1b9a, #7e57c2);
+  transform: scale(1.02);
 }
 
 button[type="button"],
 button:not([type="submit"]):not([type="reset"]) {
-  background-color: #ddd;
-  color: #333;
+  background-color: #3a3a4d;
+  color: #cfcfff;
 }
 
 button[type="button"]:hover,
 button:not([type="submit"]):not([type="reset"]):hover {
-  background-color: #bbb;
+  background-color: #50496c;
+  transform: scale(1.02);
 }
 
 /* Animação suave ao abrir o modal */
