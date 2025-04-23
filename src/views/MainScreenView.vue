@@ -154,7 +154,6 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 54px;
   box-sizing: border-box;
   overflow: hidden;
   /* Remove rolagem desnecessária */

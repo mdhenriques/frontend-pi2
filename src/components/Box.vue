@@ -5,20 +5,20 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="box">
-      <div class="box-header">
-        <span class="title">{{ title }}</span>
-        <slot name="header-action" />
-      </div>
-      <slot />
+  <div class="box">
+    <div class="box-header">
+      <span class="title">{{ title }}</span>
+      <slot name="header-action" />
     </div>
+    <slot />
+  </div>
 </template>
 
 <style scoped>
 .box {
-  flex-grow: 1;
-  min-height: 100%;
-  background: #2e2e3e; /* fundo escuro */
+  flex: 1; /* Cada box ocupa o mesmo espaço do container */
+  height: auto;
+  background: #2e2e3e;
   border-radius: 16px;
   overflow-y: auto;
   position: relative;
@@ -26,6 +26,7 @@ const props = defineProps<{
   box-shadow: 0 0 15px rgba(80, 0, 150, 0.15);
   border: 1px solid #3a3a4d;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
+  box-sizing: border-box;
 }
 
 .box:hover {

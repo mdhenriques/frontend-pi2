@@ -42,15 +42,11 @@ const emit = defineEmits<{
 .content-container {
   position: absolute;
   top: 213px;
-  /* distância abaixo do avatar/perfil */
   left: 54px;
   right: 54px;
   bottom: 54px;
-  /* mantém uma margem inferior */
   display: flex;
-  justify-content: flex-start;
   gap: 20px;
-  width: calc(100% - 108px);
   height: auto;
 }
 
