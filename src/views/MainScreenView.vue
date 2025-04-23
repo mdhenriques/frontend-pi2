@@ -150,7 +150,7 @@ onMounted(async () => {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-color: #222;
+  background-color: #1b1b25;;
   display: flex;
   flex-direction: column;
   align-items: center;
