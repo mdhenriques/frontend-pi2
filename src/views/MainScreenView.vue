@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Task } from '@/types/task';
+import type { Mission } from '@/types/mission';
 import { ref, defineComponent, onMounted } from 'vue';
 import TaskCard from "@/components/TaskCard.vue";
 import axios from 'axios';
@@ -12,6 +13,7 @@ const showModal = ref<boolean>(false);
 const title = ref<string>('');
 const description = ref<string>('');
 const tasks = ref<Task[]>([]);
+const missions = ref<Mission[]>([]);
 const coins = ref<number>(0);
 const xp = ref<number>(0);
 
@@ -109,8 +111,24 @@ const handleCreateTask = async (task: { title: string, description: string }) =>
     showModal.value = false; // Fecha o modal após criar a tarefa
 }
 
+const fetchMission = async () => {
+  try {
+    const token = localStorage.getItem("auth_token");
+    console.log(token);
+    const response = await axios.get<Mission[]>("http://localhost:5155/missoes", {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+    missions.value = response.data;
+  } catch (error) {
+    console.error("Erro ao buscar tarefas:", error);
+  }
+}
+
 onMounted(async () => {
   await fetchTasks();
+  await fetchMission();
   await updateRewards();
 })
 </script>
@@ -130,6 +148,7 @@ onMounted(async () => {
     <!-- Três caixas retangulares abaixo -->
     <ContentContainer
      :tasks="sortedTasks"
+     :missions="missions"
      @add-task="showModal = true"
      @task-updated="fetchTasks"
      @mark-completed="markTaskAsCompleted"

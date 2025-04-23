@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import type { Task } from '@/types/task';
+import type { Mission } from '@/types/mission';
 import TaskCard from './TaskCard.vue';
 import Box from './Box.vue';
+import MissionCard from './MissionCard.vue';
 
 
 const props = defineProps<{
-  tasks: Task[]
+  tasks: Task[];
+  missions: Mission[];
 }>()
 
 const emit = defineEmits<{
@@ -32,7 +35,11 @@ const emit = defineEmits<{
       
     </Box>
     <Box title="MISSÕES">
-
+      <MissionCard
+       v-for="mission in missions" 
+       :key="mission.id" 
+       :mission="mission" 
+       />
     </Box>
   </div>
 </template>
