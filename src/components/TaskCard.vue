@@ -41,7 +41,7 @@ const statusLabel = computed(() => {
     <div class="task-card">
         <div class="card-header">
             <h3>{{ task.title }}</h3>
-            <span class="status" :class="task.status">{{ statusLabel }}</span>
+            <div class="status-line" :class="task.status"></div>
         </div>
 
         <p class="description">{{ task.description }}</p>
@@ -65,9 +65,10 @@ const statusLabel = computed(() => {
 
 <style scoped>
 .task-card {
+    position: relative; /* Adicionado */
     background: #2e2e3e;
     border-radius: 18px;
-    padding: 20px;
+    padding: 20px 20px 20px 26px; /* espaço extra à esquerda pro status-line */
     color: #f0f0f0;
     box-shadow: 0 0 15px rgba(80, 0, 150, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -164,5 +165,25 @@ h3 {
     background-color: #555;
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.status-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+/* Verde para concluído */
+.status-line.concluido {
+    background-color: #4caf50;
+}
+
+/* Amarelo para em andamento (vou assumir que o "pendente" é em andamento) */
+.status-line.EmAndamento {
+    background-color: #ffc107;
 }
 </style>

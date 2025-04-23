@@ -27,6 +27,8 @@ const props = defineProps<{
   border: 1px solid #3a3a4d;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   box-sizing: border-box;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
 }
 
 .box:hover {
@@ -46,6 +48,10 @@ const props = defineProps<{
   border-bottom: 1px solid #5c5c7a;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
+}
+
+.box::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 /* Título */
