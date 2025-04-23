@@ -6,7 +6,7 @@ interface Mission {
     id: number;
     title: string;
     description: string;
-    qtdTarefas: number;    
+    qtdTarefas: number;
     coinsReward: number;
     xpReward: number;
     currentProgress: number;
@@ -28,6 +28,10 @@ const emit = defineEmits<{
         </div>
 
         <p class="description">{{ mission.description }}</p>
+
+        <div class="progress-counter">
+            <span>{{ mission.currentProgress }} / {{ mission.qtdTarefas }} tarefas</span>
+        </div>
 
         <div class="rewards">
             <div class="reward">
@@ -145,4 +149,13 @@ h3 {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.progress-counter {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 12px;
+  text-align: right;
+  font-weight: 500;
+}
+
 </style>
