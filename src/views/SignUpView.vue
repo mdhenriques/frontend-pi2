@@ -65,61 +65,95 @@ const handleSubmit = async (event: Event): Promise<void> => {
   </template>
 
 <style scoped>
-/* Fundo cinza */
 
-/* Ajusta o container para cobrir toda a tela */
 .login-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1e1e1e;
 }
 
-/* Caixa preta no centro */
 .login-box {
-    background-color: #252525;
-    color: white;
-    padding: 32px;
-    border-radius: 8px;       
-    width: 448px;
-    height: 336px;
+  background-color: #2d2d30;
+  color: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  width: 448px;
+  height: 336px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* Estilo do formulário */
 form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 label {
-    font-size: 16px;
+  font-size: 15px;
+  color: #cccccc;
 }
 
 input {
-    background-color: #252525;
-    padding: 10px;
-    border: 2px solid #515155;
-    border-radius: 8px;
-    font-size: 16px;
+  background-color: #1e1e1e;
+  padding: 10px 12px;
+  border: 1.5px solid #3c3c3c;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #ffffff;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-/* Botão roxo */
+input:focus {
+  outline: none;
+  border-color: #6a3da3;
+  background-color: #252526;
+}
+
 button {
-    padding: 10px;
-    background-color: #6A3DA3;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-a {
-    color: #FFFFFF
+  padding: 10px;
+  background-color: #6a3da3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 button:hover {
-    background-color: #5a0098;
+  background-color: #5a0098;
+  transform: scale(1.02);
+}
+
+a {
+  color: #a472d3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #ff6b6b;
+  margin-top: 5px;
+}
+
+.success-message {
+  color: #7ed957;
+  margin-top: 5px;
 }
 </style>
