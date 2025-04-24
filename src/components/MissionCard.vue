@@ -13,8 +13,7 @@ interface Mission {
 
 const props = defineProps<{ mission: Mission }>();
 const emit = defineEmits<{
-    (event: "task-updated"): void;
-    (event: "mark-completed", taskId: number, reward: { coins: number, xp: number }): void
+    (event: "mission-completed"): void
 }>();
 // Função para marcar a tarefa como concluída
 </script>
@@ -41,7 +40,9 @@ const emit = defineEmits<{
                 <span class="value">{{ mission.xpReward }}</span>
             </div>
         </div>
-
+        <button class="check-button" v-if="mission.currentProgress === mission.qtdTarefas" @click="emit('mission-completed')">
+            Resgatar Recompensas
+        </button>
     </div>
 </template>
 
@@ -149,11 +150,10 @@ h3 {
 }
 
 .progress-counter {
-  font-size: 0.85rem;
-  color: #aaa;
-  margin-bottom: 12px;
-  text-align: right;
-  font-weight: 500;
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 12px;
+    text-align: right;
+    font-weight: 500;
 }
-
 </style>

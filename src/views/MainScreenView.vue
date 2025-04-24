@@ -16,6 +16,7 @@ const tasks = ref<Task[]>([]);
 const missions = ref<Mission[]>([]);
 const coins = ref<number>(0);
 const xp = ref<number>(0);
+const missionId = ref<number>(0);
 
 const sortedTasks = computed(() => {
   return tasks.value.slice().sort((a, b) => {
@@ -82,11 +83,33 @@ const updateRewards = async (coinReward = 0, xpReward = 0, token) => {
   }
 }
 
-const addProgress = async (token) => {
+const loadRewards = async (coinReward = 0, xpReward = 0) => {
   try {
-    axios.post('http://localhost:5155/missao/progresso/1',
+    const token = localStorage.getItem("auth_token");
+    const response = await axios.put(
+      "http://localhost:5155/user/reward",
+      {  coinReward, xpReward },
+      { headers: { Authorization: `Bearer ${token}`}}
+    );
+
+    if (response.data && typeof response.data.coins === 'number' && typeof response.data.xp === 'number') {
+      coins.value = response.data.coins;
+      xp.value = response.data.xp;
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar recompensas: ", error);
+  }
+}
+
+const addProgress = async (token, id: number) => {
+  try {
+    
+    await axios.post(`http://localhost:5155/missao/progresso/${id}`,
+      null,
       { headers: { Authorization: `Bearer ${token}`} }
     )    
+
+    await fetchMission();
   } catch (error) {
     console.log(error);
   }
@@ -102,7 +125,7 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
     );
 
     await updateRewards(reward.coins, reward.xp, token);
-    await addProgress(token);
+    await addProgress(token, missionId.value);
 
     const updatedTask = tasks.value.find(t => t.id === taskId)
     if (updatedTask) {
@@ -131,6 +154,12 @@ const fetchMission = async () => {
       },
     });
     missions.value = response.data;
+    if (missionId.value === 0) {
+      missions.value.forEach(mission => {      
+      missionId.value = mission.id;
+    });
+    }
+
   } catch (error) {
     console.error("Erro ao buscar tarefas:", error);
   }
@@ -143,15 +172,31 @@ const deleteTask = async (taskId: number) => {
       `http://localhost:5155/tarefa/${taskId}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
+    await fetchTasks(); // Atualiza a lista de tarefas após a exclusão
   } catch (error) {
     console.error("Erro ao excluir tarefa: ", error)
+  }
+}
+
+const completeMission = async () => {
+  try {
+    const token = localStorage.getItem("auth_token");
+    await axios.post(
+      `http://localhost:5155/missao/resgatar/${missionId.value}`,
+      null,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    await loadRewards();
+    await fetchMission();
+  } catch (error) {
+    console.error("Erro ao completar missão:", error);
   }
 }
 
 onMounted(async () => {
   await fetchTasks();
   await fetchMission();
-  await updateRewards();
+  await loadRewards();
 })
 </script>
 
@@ -175,6 +220,7 @@ onMounted(async () => {
      @task-updated="fetchTasks"
      @mark-completed="markTaskAsCompleted"
      @delete-task="deleteTask"
+     @mission-completed="completeMission"
     />
     <!-- Componente Modal criação de tarefas-->
     <TaskModal

@@ -26,10 +26,10 @@ function handleCreateTask() {
         <h2>Criar Tarefa</h2>
         <form @submit.prevent="handleCreateTask" @submit="emit('close')">
           <label for="title">Título</label>
-          <input type="text" id="title" v-model="title" required />
+          <input type="text" id="title" v-model="title" required maxlength="50"/>
 
           <label for="description">Descrição</label>
-          <textarea id="description" v-model="description"></textarea>
+          <textarea id="description" v-model="description" maxlength="80"></textarea>
 
           <button type="submit">Confirmar</button>
           <button @click="emit('close')">Cancelar</button>

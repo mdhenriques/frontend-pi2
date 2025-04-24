@@ -99,6 +99,8 @@ h3 {
     margin: 0;
 }
 
+
+
 .status {
     font-size: 0.75rem;
     padding: 5px 12px;
@@ -108,6 +110,11 @@ h3 {
     letter-spacing: 0.5px;
     background: #5e4b8b;
     color: #fff;
+}
+
+.status-line {
+    background-color: #ffc107;
+    color: white;
 }
 
 .status.pendente {

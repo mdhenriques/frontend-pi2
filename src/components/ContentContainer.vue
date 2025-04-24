@@ -15,6 +15,7 @@ const emit = defineEmits<{
   (e: 'add-task'): void;
   (e: 'task-updated'): void;
   (e: 'mark-completed', taskId: number, reward: { coins: number, xp: number }): void;
+  (e: 'mission-completed'): void;
   (e: 'delete-task', taskId: number): void;
 }>()
 </script>
@@ -42,6 +43,7 @@ const emit = defineEmits<{
        v-for="mission in missions" 
        :key="mission.id" 
        :mission="mission" 
+       @mission-completed=" emit('mission-completed')"
        />
     </Box>
   </div>
