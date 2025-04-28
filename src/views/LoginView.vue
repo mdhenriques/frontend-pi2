@@ -9,13 +9,12 @@ interface LoginResponse {
   message?: string;
 }
 
-
 const username = ref<string>('');
 const password = ref<string>('');
 const errorMessage = ref<string>("");
 const successMessage = ref<string>("");
 
-const handleLogin = async () => {
+const handleLogin = async (): Promise<void> => {
   try {
     const response = await fetch("http://localhost:5155/account/login", {
         method: "POST",

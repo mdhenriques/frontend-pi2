@@ -1,10 +1,20 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
 import type { Task } from '@/types/task';
 import type { Mission } from '@/types/mission';
 import TaskCard from './TaskCard.vue';
 import Box from './Box.vue';
 import MissionCard from './MissionCard.vue';
 
+const draggingTask = ref<Task | null>(null);
+
+const onDragStart = (task: Task): void => {
+  draggingTask.value = task;
+};
+
+const onDragEnd = (): void => {
+  draggingTask.value = null;
+};
 
 const props = defineProps<{
   tasks: Task[];
@@ -26,25 +36,22 @@ const emit = defineEmits<{
       <template #header-action>
         <button class="add-task-button" @click="emit('add-task')">+</button>
       </template>
-      <TaskCard
-       v-for="task in tasks" 
-       :key="task.id" 
-       :task="task" 
-       @task-updated="emit('task-updated')"
-       @mark-completed="(id, reward) => emit('mark-completed', id, reward)"
-       @delete-task="(id) => emit('delete-task', id)"
-       />  
+      <TaskCard v-for="task in tasks" :key="task.id"
+        :task="task"
+        :class="{ dragging: draggingTask?.id === task.id }"
+        draggable="true"
+        @dragstart="onDragStart(task)"
+        @dragend="onDragEnd"
+        @task-updated="emit('task-updated')"
+        @mark-completed="(id, reward) => emit('mark-completed', id, reward)"
+        @delete-task="(id) => emit('delete-task', id)" />
     </Box>
     <Box title="OUTROS">
-      
+
     </Box>
     <Box title="MISSÕES">
-      <MissionCard
-       v-for="mission in missions" 
-       :key="mission.id" 
-       :mission="mission" 
-       @mission-completed=" emit('mission-completed')"
-       />
+      <MissionCard v-for="mission in missions" :key="mission.id" :mission="mission"
+        @mission-completed=" emit('mission-completed')" />
     </Box>
   </div>
 </template>
@@ -61,9 +68,6 @@ const emit = defineEmits<{
   gap: 20px;
   height: auto;
 }
-
-
-
 /* Botão "+" */
 .add-task-button {
   background-color: #007bff;

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import axios from 'axios';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 interface Task {
     id: number;
@@ -43,7 +42,7 @@ const statusLabel = computed(() => {
 </script>
 
 <template>
-    <div class="task-card">
+    <div :class="['task-card', $attrs.class]">
         <div class="card-header">
             <h3>{{ task.title }}</h3>
             <div class="status-line" :class="task.status"></div>
@@ -70,6 +69,8 @@ const statusLabel = computed(() => {
 </template>
 
 <style scoped>
+
+
 .task-card {
     position: relative; /* Adicionado */
     background: #2e2e3e;
@@ -77,10 +78,22 @@ const statusLabel = computed(() => {
     padding: 20px 20px 20px 26px; /* espaço extra à esquerda pro status-line */
     color: #f0f0f0;
     box-shadow: 0 0 15px rgba(80, 0, 150, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     border: 1px solid #3a3a4d;
 }
 
+.task-card.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg) scale(1.02);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
+}
+
+/* Corrige o conflito */
+.task-card.dragging:hover {
+  transform: rotate(2deg) scale(1.02);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
 .task-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 0 25px rgba(120, 0, 220, 0.3);
@@ -213,5 +226,6 @@ h3 {
 .delete-button:hover {
     color: #ff5252;
 }
+
 
 </style>
