@@ -6,6 +6,7 @@ interface LoginResponse {
   message?: string;
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const username = ref<string>("");
 const password = ref<string>("");
 const errorMessage = ref<string>("");
@@ -15,7 +16,7 @@ const handleSubmit = async (event: Event): Promise<void> => {
   event.preventDefault();
 
   try {
-    const response = await fetch("http://localhost:5155/account/signup", {
+    const response = await fetch(`${apiUrl}/account/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

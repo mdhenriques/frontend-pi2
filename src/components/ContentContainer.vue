@@ -36,7 +36,9 @@ const emit = defineEmits<{
       <template #header-action>
         <button class="add-task-button" @click="emit('add-task')">+</button>
       </template>
-      <TaskCard v-for="task in tasks" :key="task.id"
+      <TaskCard 
+        v-for="task in tasks" 
+        :key="task.id"
         :task="task"
         :class="{ dragging: draggingTask?.id === task.id }"
         draggable="true"
@@ -46,8 +48,7 @@ const emit = defineEmits<{
         @mark-completed="(id, reward) => emit('mark-completed', id, reward)"
         @delete-task="(id) => emit('delete-task', id)" />
     </Box>
-    <Box title="OUTROS">
-
+    <Box title="EM ANDAMENTO">
     </Box>
     <Box title="MISSÕES">
       <MissionCard v-for="mission in missions" :key="mission.id" :mission="mission"
