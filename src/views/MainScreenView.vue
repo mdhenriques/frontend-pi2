@@ -1,22 +1,21 @@
 <script lang="ts" setup>
 import type { Task } from '@/types/task';
 import type { Mission } from '@/types/mission';
-import { ref, defineComponent, onMounted } from 'vue';
-import TaskCard from "@/components/TaskCard.vue";
-import axios from 'axios';
-import { computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import axios, { type AxiosResponse } from 'axios';
 import TaskModal from '@/components/TaskModal.vue';
 import ContentContainer from '@/components/ContentContainer.vue';
 import ProfileSection from '@/components/ProfileSection.vue';
 
 const showModal = ref<boolean>(false);
-const title = ref<string>('');
-const description = ref<string>('');
 const tasks = ref<Task[]>([]);
 const missions = ref<Mission[]>([]);
 const coins = ref<number>(0);
 const xp = ref<number>(0);
 const missionId = ref<number>(0);
+const token = localStorage.getItem("auth_token");
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const sortedTasks = computed(() => {
   return tasks.value.slice().sort((a, b) => {
@@ -26,12 +25,11 @@ const sortedTasks = computed(() => {
   });
 });
 
-const createTask = async (task: { title: string, description: string }) => {
+const createTask = async (task: { title: string, description: string }): Promise<void> => {
   if (task.title && task.description) {
-    try {
-      const token = localStorage.getItem("auth_token");
-      const response = await axios.post(
-        "http://localhost:5155/tarefa",
+    try {      
+      await axios.post(
+        `${apiUrl}/tarefa`,
         {
           title: task.title,
           description: task.description,
@@ -51,10 +49,8 @@ const createTask = async (task: { title: string, description: string }) => {
 }
 
 const fetchTasks = async (): Promise<void> => {
-  try {
-    const token = localStorage.getItem("auth_token");
-    console.log(token);
-    const response = await axios.get<Task[]>("http://localhost:5155/tarefas", {
+  try {    
+    const response = await axios.get<Task[]>(`${apiUrl}/tarefas`, {
       headers: {
         Authorization: token ? `Bearer ${token}` : "",
       },
@@ -65,11 +61,11 @@ const fetchTasks = async (): Promise<void> => {
   }
 }
 
-const updateRewards = async (coinReward = 0, xpReward = 0, token) => {
+const updateRewards = async (coinReward = 0, xpReward = 0): Promise<void> => {
   try {
 
     const response = await axios.put(
-      "http://localhost:5155/user/reward",
+      `${apiUrl}/user/reward`,
       { coinReward, xpReward },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -83,13 +79,12 @@ const updateRewards = async (coinReward = 0, xpReward = 0, token) => {
   }
 }
 
-const loadRewards = async (coinReward = 0, xpReward = 0) => {
-  try {
-    const token = localStorage.getItem("auth_token");
+const loadRewards = async (coinReward = 0, xpReward = 0): Promise<void> => {
+  try {    
     const response = await axios.put(
-      "http://localhost:5155/user/reward",
-      { coinReward, xpReward },
-      { headers: { Authorization: `Bearer ${token}` } }
+      `${apiUrl}/user/reward`,
+      {  coinReward, xpReward },
+      { headers: { Authorization: `Bearer ${token}`}}
     );
 
     if (response.data && typeof response.data.coins === 'number' && typeof response.data.xp === 'number') {
@@ -101,10 +96,9 @@ const loadRewards = async (coinReward = 0, xpReward = 0) => {
   }
 }
 
-const addProgress = async (token, id: number) => {
-  try {
-
-    await axios.post(`http://localhost:5155/missao/progresso/${id}`,
+const addProgress = async (id: number): Promise<void> => {
+  try {    
+    await axios.post(`${apiUrl}/missao/progresso/${id}`,
       null,
       { headers: { Authorization: `Bearer ${token}` } }
     )
@@ -116,16 +110,15 @@ const addProgress = async (token, id: number) => {
 }
 
 const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: number }) => {
-  const token = localStorage.getItem("auth_token");
   try {
     await axios.put(
-      `http://localhost:5155/tarefa/status/${taskId}`,
+      `${apiUrl}/tarefa/status/${taskId}`,
       { status: "concluido" },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    await updateRewards(reward.coins, reward.xp, token);
-    await addProgress(token, missionId.value);
+    await updateRewards(reward.coins, reward.xp);
+    await addProgress(missionId.value);
 
     const updatedTask = tasks.value.find(t => t.id === taskId)
     if (updatedTask) {
@@ -145,10 +138,9 @@ const handleCreateTask = async (task: { title: string, description: string }) =>
 }
 
 const fetchMission = async () => {
-  try {
-    const token = localStorage.getItem("auth_token");
+  try {    
     console.log(token);
-    const response = await axios.get<Mission[]>("http://localhost:5155/missoes", {
+    const response = await axios.get<Mission[]>(`${apiUrl}/missoes`, {
       headers: {
         Authorization: token ? `Bearer ${token}` : "",
       },
@@ -166,10 +158,9 @@ const fetchMission = async () => {
 }
 
 const deleteTask = async (taskId: number) => {
-  try {
-    const token = localStorage.getItem("auth_token");
+  try {    
     await axios.delete(
-      `http://localhost:5155/tarefa/${taskId}`,
+      `${apiUrl}/tarefa/${taskId}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     await fetchTasks(); // Atualiza a lista de tarefas após a exclusão
@@ -178,11 +169,10 @@ const deleteTask = async (taskId: number) => {
   }
 }
 
-const completeMission = async () => {
-  try {
-    const token = localStorage.getItem("auth_token");
+const completeMission = async (): Promise<void> => {
+  try {    
     await axios.post(
-      `http://localhost:5155/missao/resgatar/${missionId.value}`,
+      `${apiUrl}/missao/resgatar/${missionId.value}`,
       null,
       { headers: { Authorization: `Bearer ${token}` } }
     );
