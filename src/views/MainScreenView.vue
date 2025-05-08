@@ -37,7 +37,7 @@ const createTask = async (task: { title: string, description: string }) => {
           description: task.description,
         },
         {
-          headers: {  
+          headers: {
             Authorization: `Bearer ${token}`,
           },
         }
@@ -67,11 +67,11 @@ const fetchTasks = async (): Promise<void> => {
 
 const updateRewards = async (coinReward = 0, xpReward = 0, token) => {
   try {
-    
+
     const response = await axios.put(
       "http://localhost:5155/user/reward",
-      {  coinReward, xpReward },
-      { headers: { Authorization: `Bearer ${token}`}}
+      { coinReward, xpReward },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
     if (response.data && typeof response.data.coins === 'number' && typeof response.data.xp === 'number') {
@@ -88,8 +88,8 @@ const loadRewards = async (coinReward = 0, xpReward = 0) => {
     const token = localStorage.getItem("auth_token");
     const response = await axios.put(
       "http://localhost:5155/user/reward",
-      {  coinReward, xpReward },
-      { headers: { Authorization: `Bearer ${token}`}}
+      { coinReward, xpReward },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
     if (response.data && typeof response.data.coins === 'number' && typeof response.data.xp === 'number') {
@@ -103,11 +103,11 @@ const loadRewards = async (coinReward = 0, xpReward = 0) => {
 
 const addProgress = async (token, id: number) => {
   try {
-    
+
     await axios.post(`http://localhost:5155/missao/progresso/${id}`,
       null,
-      { headers: { Authorization: `Bearer ${token}`} }
-    )    
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
 
     await fetchMission();
   } catch (error) {
@@ -139,9 +139,9 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
 };
 
 const handleCreateTask = async (task: { title: string, description: string }) => {
-    await createTask(task);
-    await fetchTasks();
-    showModal.value = false; // Fecha o modal após criar a tarefa
+  await createTask(task);
+  await fetchTasks();
+  showModal.value = false; // Fecha o modal após criar a tarefa
 }
 
 const fetchMission = async () => {
@@ -155,9 +155,9 @@ const fetchMission = async () => {
     });
     missions.value = response.data;
     if (missionId.value === 0) {
-      missions.value.forEach(mission => {      
-      missionId.value = mission.id;
-    });
+      missions.value.forEach(mission => {
+        missionId.value = mission.id;
+      });
     }
 
   } catch (error) {
@@ -201,50 +201,60 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="home-container">
+  <div class="home-wrapper">
+    <div class="background-overlay"></div>
+    <div class="home-container">
 
-    <!-- Foto de perfil -->
-    <ProfileSection
-    :coins="coins"
-    :xp="xp"
-    />
+      <!-- Foto de perfil -->
+      <ProfileSection :coins="coins" :xp="xp" />
 
-    <!-- Botão da loja -->
-    <button class="shop-button">Loja</button>
+      <!-- Botão da loja -->
+      <button class="shop-button">Loja</button>
 
-    <!-- Três caixas retangulares abaixo -->
-    <ContentContainer
-     :tasks="sortedTasks"
-     :missions="missions"
-     @add-task="showModal = true"
-     @task-updated="fetchTasks"
-     @mark-completed="markTaskAsCompleted"
-     @delete-task="deleteTask"
-     @mission-completed="completeMission"
-    />
-    <!-- Componente Modal criação de tarefas-->
-    <TaskModal
-      :show="showModal"
-      @close="showModal = false"
-      @create-task="handleCreateTask"
-    />
+      <!-- Três caixas retangulares abaixo -->
+      <ContentContainer :tasks="sortedTasks" :missions="missions" @add-task="showModal = true"
+        @task-updated="fetchTasks" @mark-completed="markTaskAsCompleted" @delete-task="deleteTask"
+        @mission-completed="completeMission" />
+      <!-- Componente Modal criação de tarefas-->
+      <TaskModal :show="showModal" @close="showModal = false" @create-task="handleCreateTask" />
 
+    </div>
   </div>
+
+
 </template>
 
 <style scoped>
-/* Container principal */
-.home-container {
+.home-wrapper {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-color: #1b1b25;;
+  overflow: hidden;
+}
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('public/backgrounds/Wallpaper 1.2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.55; /* Altere esse valor para mais ou menos transparência */
+  z-index: 0;
+}
+/* Container principal */
+.home-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  overflow: hidden;
-  /* Remove rolagem desnecessária */
 }
 
 

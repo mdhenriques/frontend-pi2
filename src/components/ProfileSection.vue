@@ -4,11 +4,15 @@ const props = defineProps<{
     coins: number,
     xp: number
 }>()
+
+const avatarSrc = 'public/avatares/IMG-20250507-WA0097.jpg'
 </script>
 
 <template>
     <div class="profile-section">
-        <div class="profile-box"></div>
+        <div class="profile-box">
+          <img :src="avatarSrc" alt="Avatar" />
+        </div>
         <div class="rewards">
             <p>💰: {{ coins }}</p>
             <p>⭐: {{ xp }}</p>
@@ -33,7 +37,17 @@ const props = defineProps<{
   height: 80px;
   background-color: gray;
   border-radius: 12px;
+  overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .rewards {

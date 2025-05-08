@@ -10,25 +10,27 @@ const props = defineProps<{
       <span class="title">{{ title }}</span>
       <slot name="header-action" />
     </div>
-    <slot />
+    <div class="box-body">
+      <slot />
+    </div>
   </div>
 </template>
 
 <style scoped>
 .box {
-  flex: 1; /* Cada box ocupa o mesmo espaço do container */
+  flex: 1;
   height: auto;
-  background: #2e2e3e;
   border-radius: 16px;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
   padding: 0;
   box-shadow: 0 0 15px rgba(80, 0, 150, 0.15);
-  border: 1px solid #3a3a4d;
+  border: 1px solid #5a4a70;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   box-sizing: border-box;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
   -ms-overflow-style: none;
+  background-color: transparent; /* Para evitar cor sólida por padrão */
 }
 
 .box:hover {
@@ -48,6 +50,16 @@ const props = defineProps<{
   border-bottom: 1px solid #5c5c7a;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
+  z-index: 1;
+}
+
+.box-body {
+  padding: 16px 20px;
+  background-color: rgba(46, 46, 62, 0.4); /* Mesma cor que o .box, mas com opacidade */
+  backdrop-filter: blur(4px); /* opcional: dá um efeito levemente fosco */
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  overflow-y: auto;
 }
 
 .box::-webkit-scrollbar {
