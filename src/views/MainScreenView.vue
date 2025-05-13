@@ -6,8 +6,10 @@ import axios, { type AxiosResponse } from 'axios';
 import TaskModal from '@/components/TaskModal.vue';
 import ContentContainer from '@/components/ContentContainer.vue';
 import ProfileSection from '@/components/ProfileSection.vue';
+import LojaModal from '@/components/LojaModal.vue';
 
-const showModal = ref<boolean>(false);
+const showLojaModal = ref<boolean>(false);
+const showCreateTaskModal = ref<boolean>(false);
 const tasks = ref<Task[]>([]);
 const missions = ref<Mission[]>([]);
 const coins = ref<number>(0);
@@ -134,7 +136,7 @@ const markTaskAsCompleted = async (taskId: number, reward: { coins: number, xp: 
 const handleCreateTask = async (task: { title: string, description: string }) => {
   await createTask(task);
   await fetchTasks();
-  showModal.value = false; // Fecha o modal após criar a tarefa
+  showCreateTaskModal.value = false; // Fecha o modal após criar a tarefa
 }
 
 const fetchMission = async () => {
@@ -199,14 +201,15 @@ onMounted(async () => {
       <ProfileSection :coins="coins" :xp="xp" />
 
       <!-- Botão da loja -->
-      <button class="shop-button">Loja</button>
+      <button @click="showLojaModal = true" class="shop-button">Loja</button>
+      <LojaModal :show="showLojaModal" @close="showLojaModal = false" />
 
       <!-- Três caixas retangulares abaixo -->
-      <ContentContainer :tasks="sortedTasks" :missions="missions" @add-task="showModal = true"
+      <ContentContainer :tasks="sortedTasks" :missions="missions" @add-task="showCreateTaskModal = true"
         @task-updated="fetchTasks" @mark-completed="markTaskAsCompleted" @delete-task="deleteTask"
         @mission-completed="completeMission" />
       <!-- Componente Modal criação de tarefas-->
-      <TaskModal :show="showModal" @close="showModal = false" @create-task="handleCreateTask" />
+      <TaskModal :show="showCreateTaskModal" @close="showCreateTaskModal = false" @create-task="handleCreateTask" />
 
     </div>
   </div>
