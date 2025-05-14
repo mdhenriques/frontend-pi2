@@ -8,6 +8,8 @@ import ContentContainer from '@/components/ContentContainer.vue';
 import ProfileSection from '@/components/ProfileSection.vue';
 import LojaModal from '@/components/LojaModal.vue';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const showLojaModal = ref<boolean>(false);
 const showCreateTaskModal = ref<boolean>(false);
 const tasks = ref<Task[]>([]);
@@ -16,9 +18,26 @@ const coins = ref<number>(0);
 const xp = ref<number>(0);
 const missionId = ref<number>(0);
 const token = localStorage.getItem("auth_token");
+const currentBackground = ref('Wallpaper 1.2.jpg'); // Defina o background padrão aqui
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const backgroundStyle = computed(() => ({
+  backgroundImage: `url('/backgrounds/${currentBackground.value}')`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  opacity: 0.55,
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  zIndex: 0
+}))
 
+
+function handleBackgroundChange(novoBackground: string) {
+  currentBackground.value = novoBackground
+}
 const sortedTasks = computed(() => {
   return tasks.value.slice().sort((a, b) => {
     if (a.status === "Em Andamento" && b.status !== "Em Andamento") return -1;
@@ -194,7 +213,7 @@ onMounted(async () => {
 
 <template>
   <div class="home-wrapper">
-    <div class="background-overlay"></div>
+    <div class="background-overlay" :style="backgroundStyle"/>
     <div class="home-container">
 
       <!-- Foto de perfil -->
@@ -225,19 +244,7 @@ onMounted(async () => {
   overflow: hidden;
 }
 
-.background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('public/backgrounds/Wallpaper 1.2.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.55; /* Altere esse valor para mais ou menos transparência */
-  z-index: 0;
-}
+
 /* Container principal */
 .home-container {
   position: relative;
