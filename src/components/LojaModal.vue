@@ -7,7 +7,8 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'close'): void
+  (e: 'close'): void,
+  (e: 'select-background', background: string): void
 }>()
 
 const selectedTab = ref<'avatares' | 'backgrounds'>('avatares')
@@ -34,7 +35,7 @@ const selectedTab = ref<'avatares' | 'backgrounds'>('avatares')
       <div v-else-if="selectedTab === 'backgrounds'" class="content-scroll">
         <h2>Backgrounds</h2>
         <div class="item-grid">
-          <button v-for="bg in loja.backgrounds" :key="bg">
+          <button v-for="bg in loja.backgrounds" :key="bg" @click="emit('select-background', bg)">
             <img :src="`/backgrounds/${bg}`" :alt="bg" width="120" />
           </button>
         </div>

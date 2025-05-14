@@ -221,7 +221,7 @@ onMounted(async () => {
 
       <!-- Botão da loja -->
       <button @click="showLojaModal = true" class="shop-button">Loja</button>
-      <LojaModal :show="showLojaModal" @close="showLojaModal = false" />
+      <LojaModal :show="showLojaModal" @close="showLojaModal = false" @select-background="handleBackgroundChange"/>
 
       <!-- Três caixas retangulares abaixo -->
       <ContentContainer :tasks="sortedTasks" :missions="missions" @add-task="showCreateTaskModal = true"
