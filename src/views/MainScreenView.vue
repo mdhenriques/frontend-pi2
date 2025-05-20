@@ -19,6 +19,8 @@ const xp = ref<number>(0);
 const missionId = ref<number>(0);
 const token = localStorage.getItem("auth_token");
 const currentBackground = ref('Wallpaper 1.2.jpg'); // Defina o background padrão aqui
+const currentAvatar = ref('avatares/Avatar Romano.png'); // Defina o avatar padrão aqui
+const ownedItems = ref<string[]>([]);
 
 const backgroundStyle = computed(() => ({
   backgroundImage: `url('/backgrounds/${currentBackground.value}')`,
@@ -33,11 +35,16 @@ const backgroundStyle = computed(() => ({
   height: '100%',
   zIndex: 0
 }))
+function handleSelectAvatar(avatar: string) {
 
+  currentAvatar.value = avatar;
+  console.log(currentAvatar.value);
+}
 
 function handleBackgroundChange(novoBackground: string) {
   currentBackground.value = novoBackground
 }
+
 const sortedTasks = computed(() => {
   return tasks.value.slice().sort((a, b) => {
     if (a.status === "Em Andamento" && b.status !== "Em Andamento") return -1;
@@ -204,10 +211,41 @@ const completeMission = async (): Promise<void> => {
   }
 }
 
+const getUserinfo = async (): Promise<void> => {
+  try {    
+    const response = await axios.get(`${apiUrl}/userinfo`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+    coins.value = response.data.coins;
+    xp.value = response.data.xp;
+    ownedItems.value = response.data.ownedItems;
+  } catch (error) {
+    console.error("Erro ao buscar informações do usuário:", error);
+  }
+}
+
+const handlePurchase = async (item: { nome: string, preco: number }): Promise<void> => {
+  try {    
+    await axios.post(
+      `${apiUrl}/user/buy`,
+      { itemId: item.nome },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    ownedItems.value.push(item.nome);
+    await getUserinfo();
+  } catch (error) {
+    console.error("Erro ao comprar item:", error);
+  }
+}
+
+
+
 onMounted(async () => {
   await fetchTasks();
   await fetchMission();
-  await loadRewards();
+  await getUserinfo();
 })
 </script>
 
@@ -217,11 +255,18 @@ onMounted(async () => {
     <div class="home-container">
 
       <!-- Foto de perfil -->
-      <ProfileSection :coins="coins" :xp="xp" />
+      <ProfileSection :coins="coins" :xp="xp" :avatar="currentAvatar"/>
 
       <!-- Botão da loja -->
       <button @click="showLojaModal = true" class="shop-button">Loja</button>
-      <LojaModal :show="showLojaModal" @close="showLojaModal = false" @select-background="handleBackgroundChange"/>
+      <LojaModal
+       :show="showLojaModal"
+       :ownedItems="ownedItems" 
+       @close="showLojaModal = false" 
+       @select-background="handleBackgroundChange" 
+       @select-avatar="handleSelectAvatar" 
+       @purchase="handlePurchase"
+      />
 
       <!-- Três caixas retangulares abaixo -->
       <ContentContainer :tasks="sortedTasks" :missions="missions" @add-task="showCreateTaskModal = true"

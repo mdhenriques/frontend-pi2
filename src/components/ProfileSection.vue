@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 
-const props = defineProps<{
+
+const { avatar, coins, xp } = defineProps<{
+    avatar: string,
     coins: number,
     xp: number
 }>()
-
-const avatarSrc = 'public/avatares/IMG-20250507-WA0097.jpg'
+const avatar1 = "avatares/Avatar Romano.png";
 </script>
 
 <template>
     <div class="profile-section">
         <div class="profile-box">
-          <img :src="avatarSrc" alt="Avatar" />
+          <img :src="avatar" alt="Avatar" />
         </div>
         <div class="rewards">
             <p>💰: {{ coins }}</p>
