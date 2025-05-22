@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 const props = defineProps<{
   show: boolean
-  ownedItems: number[]
+  ownedItems: string[]
 }>()
 
 const emit = defineEmits<{
@@ -16,23 +16,33 @@ const emit = defineEmits<{
 
 
 const selectedTab = ref<'avatares' | 'backgrounds'>('avatares')
-const isOwned = (itemId: number): boolean => props.ownedItems.includes(itemId)
+const isOwned = (itemId: string): boolean => props.ownedItems.includes(itemId)
 
 const selectedItem = ref<{ id: number, preco: number, nome: string, tipo: 'avatar' | 'background' } | null>(null)
 
 function handleClick(item: { id: number, preco: number, nome: string }, tipo: 'avatar' | 'background') {
-  if (isOwned(item.id)) {
-    if (tipo === 'avatar') emit('select-avatar', `avatares/${item.nome}`)
-    else emit('select-background', item.nome)
-  } else {
-    selectedItem.value = { ...item, tipo }
-  }
+  selectedItem.value = { ...item, tipo }
+  
 }
 
 function comprarItem() {
+
   if (selectedItem.value) {
+   
     emit('purchase', { id: selectedItem.value.id, preco: selectedItem.value.preco })
-    selectedItem.value = null // opcional: fecha a visualização após compra
+    selectedItem.value = null // opcional: fecha a visualização após compra    
+  }
+}
+
+function selecionarItem() {
+  if (selectedItem.value) {
+    
+    if (selectedItem.value.tipo === 'avatar') {
+      emit('select-avatar', `avatares/${selectedItem.value.nome}`)
+    } else {
+      emit('select-background', selectedItem.value.nome)
+    }
+    selectedItem.value = null
   }
 }
 
@@ -45,32 +55,37 @@ function comprarItem() {
 
       <div class="tab-buttons">
         <button :class="{ active: selectedTab === 'avatares' }" @click="selectedTab = 'avatares'">Avatares</button>
-        <button :class="{ active: selectedTab === 'backgrounds' }" @click="selectedTab = 'backgrounds'">Backgrounds</button>
+        <button :class="{ active: selectedTab === 'backgrounds' }"
+          @click="selectedTab = 'backgrounds'">Backgrounds</button>
       </div>
 
       <div class="modal-body">
         <div class="content-scroll">
           <h2>{{ selectedTab === 'avatares' ? 'Avatares' : 'Backgrounds' }}</h2>
           <div class="item-grid">
-            <button v-for="item in selectedTab === 'avatares' ? loja.avatares : loja.backgrounds"
-                    :key="item.nome"
-                    @click="handleClick(item, selectedTab === 'avatares' ? 'avatar' : 'background')"
-                    :class="{ locked: !isOwned(item.id) }">
-              <img :src="`/${selectedTab}/${item.nome}`" :alt="item.nome" :width="selectedTab === 'avatares' ? 80 : 120" />
-              <div v-if="!isOwned(item.id)" class="lock-overlay">🔒</div>
-              <div class="item-price">{{ item.preco }} 🪙</div>
+            <button v-for="item in selectedTab === 'avatares' ? loja.avatares : loja.backgrounds" :key="item.nome"
+              @click="handleClick(item, selectedTab === 'avatares' ? 'avatar' : 'background')"
+              :class="{ locked: !isOwned(item.id.toString()) }">
+              <img :src="`/${selectedTab}/${item.nome}`" :alt="item.nome"
+                :width="selectedTab === 'avatares' ? 80 : 120" />
+              <div v-if="!isOwned(item.id.toString())" class="lock-overlay">🔒</div>
+              <div v-if="!isOwned(item.id.toString())" class="item-price">{{ item.preco }} 🪙</div>
             </button>
           </div>
         </div>
 
-        <!-- Painel lateral do item bloqueado -->
+        <!-- Painel lateral do item selecionado -->
         <div v-if="selectedItem" class="side-panel">
           <img :src="`/${selectedItem.tipo === 'avatar' ? 'avatares' : 'backgrounds'}/${selectedItem.nome}`"
-               :alt="selectedItem.nome"
-               class="preview-img" />
-          <div class="item-price big">{{ selectedItem.preco }} 🪙</div>
-          <button class="buy-button" @click="comprarItem">Comprar</button>
+            :alt="selectedItem.nome" class="preview-img" />
+          <div v-if="!isOwned(selectedItem.id.toString())" class="item-price big">{{ selectedItem.preco }} 🪙</div>
+
+          <!-- Botão seletor ou compra -->
+          <button class="buy-button" @click="isOwned(selectedItem.id.toString()) ? selecionarItem() : comprarItem()">
+            {{ isOwned(selectedItem.id.toString()) ? 'Selecionar' : 'Comprar' }}
+          </button>
         </div>
+
       </div>
     </div>
   </div>
@@ -140,7 +155,8 @@ function comprarItem() {
 .content-scroll {
   overflow-y: auto;
   flex-grow: 1;
-  width: 1000px; /* Ajuste conforme necessário para manter as 4-5 colunas */
+  width: 1000px;
+  /* Ajuste conforme necessário para manter as 4-5 colunas */
 }
 
 .item-grid {
@@ -243,7 +259,8 @@ function comprarItem() {
 }
 
 .modal-content {
-  max-width: 1100px; /* ou até 1000px se necessário */
+  max-width: 1100px;
+  /* ou até 1000px se necessário */
   width: 95%;
 }
 </style>

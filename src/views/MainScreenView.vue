@@ -226,15 +226,24 @@ const getUserinfo = async (): Promise<void> => {
   }
 }
 
-const handlePurchase = async (item: { nome: string, preco: number }): Promise<void> => {
-  try {    
-    await axios.post(
+const handlePurchase = async (item: { id: number, preco: number }): Promise<void> => {
+  try {        
+    if (coins.value < item.preco) {
+      console.log('saldo insuficiente')
+    } else {
+      await updateRewards((item.preco * -1), 0)
+      await axios.post(
       `${apiUrl}/user/buy`,
-      { itemId: item.nome },
-      { headers: { Authorization: `Bearer ${token}` } }
+      { itemId: item.id.toString() },
+      { headers: {
+         Authorization: `Bearer ${token}`,
+         'Content-Type': 'application/json'
+       } }
     );
-    ownedItems.value.push(item.nome);
+    ownedItems.value.push(item.id.toString());
     await getUserinfo();
+    }
+    
   } catch (error) {
     console.error("Erro ao comprar item:", error);
   }
