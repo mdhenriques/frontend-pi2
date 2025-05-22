@@ -19,7 +19,7 @@ const xp = ref<number>(0);
 const missionId = ref<number>(0);
 const token = localStorage.getItem("auth_token");
 const currentBackground = ref('Wallpaper 1.2.jpg'); // Defina o background padrão aqui
-const currentAvatar = ref('avatares/Avatar Romano.png'); // Defina o avatar padrão aqui
+const currentAvatar = ref(); // Defina o avatar padrão aqui
 const ownedItems = ref<string[]>([]);
 
 const backgroundStyle = computed(() => ({
@@ -35,13 +35,57 @@ const backgroundStyle = computed(() => ({
   height: '100%',
   zIndex: 0
 }))
-function handleSelectAvatar(avatar: string) {
 
+function handleSelectAvatar(avatar: string) {
+  const data = {
+  character: avatar,
+  frame: "string",
+  theme: "string"
+};
+
+axios.put(`${apiUrl}/user/equip`, data, {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => {
+  console.log('Resposta:', response.data);
+})
+.catch(error => {
+  if (error.response) {
+    console.error('Erro na resposta:', error.response.data);
+  } else {
+    console.error('Erro na requisição:', error.message);
+  }
+});
   currentAvatar.value = avatar;
-  console.log(currentAvatar.value);
-}
+
+};
 
 function handleBackgroundChange(novoBackground: string) {
+    const data = {
+  character: null,
+  frame: null,
+  theme: novoBackground
+};
+
+axios.put(`${apiUrl}/user/equip`, data, {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => {
+  console.log('Resposta:', response.data);
+})
+.catch(error => {
+  if (error.response) {
+    console.error('Erro na resposta:', error.response.data);
+  } else {
+    console.error('Erro na requisição:', error.message);
+  }
+});
   currentBackground.value = novoBackground
 }
 
@@ -218,6 +262,8 @@ const getUserinfo = async (): Promise<void> => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
+    currentAvatar.value = response.data.equipped.character;
+    currentBackground.value = response.data.equipped.theme;
     coins.value = response.data.coins;
     xp.value = response.data.xp;
     ownedItems.value = response.data.ownedItems;
