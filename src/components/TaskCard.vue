@@ -28,24 +28,29 @@ const markAsCompleted = () => {
             xp: props.task.xpReward
         });
     }
+    console.log(props.task.status)
+    console.log(statusLabel.value);
 };
+const statusMap: { [key: string]: string } = {
+    '0': 'pendente',
+    '1': 'emandamento',
+    '2': 'concluido',
+    '3': 'urgente',
+    '4': 'atrasada',
+};
+
 const statusLabel = computed(() => {
-    switch (props.task.status) {
-        case 'pendente':
-            return 'Pendente';
-        case 'concluido':
-            return 'Concluída';
-        default:
-            return props.task.status;
-    }
+    return statusMap[props.task.status] || 'desconhecido';
 });
+
+
 </script>
 
 <template>
     <div :class="['task-card', $attrs.class]">
         <div class="card-header">
             <h3>{{ task.title }}</h3>
-            <div class="status-line" :class="task.status"></div>
+            <div class="status-line" :class="statusLabel"></div>
             <button class="delete-button" @click="deleteTask" title="Excluir tarefa">🗑️</button>
         </div>
 
@@ -62,7 +67,7 @@ const statusLabel = computed(() => {
             </div>
         </div>
 
-        <button @click="markAsCompleted" class="check-button" :disabled="task.status === 'concluido'">
+        <button @click="markAsCompleted" class="check-button" :disabled="statusLabel === 'concluido'">
             ✔️ Marcar como feita
         </button>
     </div>
@@ -131,12 +136,17 @@ h3 {
 }
 
 .status.pendente {
-    background-color: #a374ff;
+    background-color: #ffc107;
     color: #1e1e2f;
 }
 
 .status.concluido {
     background-color: #4caf50;
+    color: white;
+}
+
+.status.emandamento {
+    background-color: #42a5f5;
     color: white;
 }
 

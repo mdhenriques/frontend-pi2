@@ -295,7 +295,18 @@ const handlePurchase = async (item: { id: number, preco: number }): Promise<void
   }
 }
 
-
+const handleMoveTask = async (task: Task): Promise<void> => {
+  try {
+    const taskId = task.id;
+    await axios.put(
+      `${apiUrl}/tarefa/status/${taskId}`,
+      { status: "1" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  } catch (error) {
+    console.error("Erro ao mover tarefa:", error);
+  }
+}
 
 onMounted(async () => {
   await fetchTasks();
@@ -326,7 +337,7 @@ onMounted(async () => {
       <!-- Três caixas retangulares abaixo -->
       <ContentContainer :tasks="sortedTasks" :missions="missions" @add-task="showCreateTaskModal = true"
         @task-updated="fetchTasks" @mark-completed="markTaskAsCompleted" @delete-task="deleteTask"
-        @mission-completed="completeMission" />
+        @mission-completed="completeMission" @move-to-in-progress="handleMoveTask"/>
       <!-- Componente Modal criação de tarefas-->
       <TaskModal :show="showCreateTaskModal" @close="showCreateTaskModal = false" @create-task="handleCreateTask" />
 
