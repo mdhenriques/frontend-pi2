@@ -27,7 +27,20 @@ const emit = defineEmits<{
   (e: 'mark-completed', taskId: number, reward: { coins: number, xp: number }): void;
   (e: 'mission-completed'): void;
   (e: 'delete-task', taskId: number): void;
+  (e: 'move-to-in-progress', task: Task): void;
 }>()
+
+const onDropInProgress = () => {
+  if (draggingTask.value) {
+    emit('move-to-in-progress', draggingTask.value);
+    emit('task-updated');
+    draggingTask.value = null;
+  }
+}
+
+const onDragOver = (event: DragEvent) => {
+  event.preventDefault();
+};
 </script>
 
 <template>
@@ -37,7 +50,7 @@ const emit = defineEmits<{
         <button class="add-task-button" @click="emit('add-task')">+</button>
       </template>
       <TaskCard 
-        v-for="task in tasks" 
+        v-for="task in tasks.filter(task => Number(task.status) !== 1)" 
         :key="task.id"
         :task="task"
         :class="{ dragging: draggingTask?.id === task.id }"
@@ -48,7 +61,22 @@ const emit = defineEmits<{
         @mark-completed="(id, reward) => emit('mark-completed', id, reward)"
         @delete-task="(id) => emit('delete-task', id)" />
     </Box>
-    <Box title="EM ANDAMENTO">
+    <Box
+     title="EM ANDAMENTO"
+     @dragover="onDragOver"
+     @drop="onDropInProgress"    
+    >
+    <TaskCard 
+        v-for="task in tasks.filter(task => Number(task.status) === 1)" 
+        :key="task.id"
+        :task="task"
+        :class="{ dragging: draggingTask?.id === task.id }"
+        draggable="true"
+        @dragstart="onDragStart(task)"
+        @dragend="onDragEnd"
+        @task-updated="emit('task-updated')"
+        @mark-completed="(id, reward) => emit('mark-completed', id, reward)"
+        @delete-task="(id) => emit('delete-task', id)" />
     </Box>
     <Box title="MISSÕES">
       <MissionCard v-for="mission in missions" :key="mission.id" :mission="mission"

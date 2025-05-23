@@ -145,6 +145,11 @@ h3 {
     color: white;
 }
 
+.status.emandamento {
+    background-color: #42a5f5;
+    color: white;
+}
+
 .description {
     font-size: 0.95rem;
     line-height: 1.5;
